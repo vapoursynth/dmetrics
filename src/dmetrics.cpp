@@ -308,8 +308,8 @@ static void VS_CC dmetricsCreate(const VSMap *in, VSMap *out, void *userData, VS
 	d->settings.y0 = vsapi->mapGetIntSaturated(in, "y0", 0, &err);
 	d->settings.y1 = vsapi->mapGetIntSaturated(in, "y1", 0, &err);
 
-	d->mmprop = "MMetric";
-	d->vmprop = "VMetric";
+	d->mmprop = "MMetrics";
+	d->vmprop = "VMetrics";
 
 	const char *prefix = vsapi->mapGetData(in, "prefix", 0, &err);
 	if (prefix) {
