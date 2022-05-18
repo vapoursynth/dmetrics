@@ -245,13 +245,8 @@ static void calculateTelecideMetrics(const VSFrame *frameC, const VSFrame *frame
 		}
 	}
 
-	unsigned int highest_sumc = 0;
-	unsigned int highest_sump = 0;
-
-	for (size_t i = 0; i < numblocks; i++) {
-		highest_sump = std::max(highest_sump, sump[i]);
-		highest_sumc = std::max(highest_sumc, sumc[i]);
-	}
+	unsigned int highest_sumc = *std::max_element(sumc, sumc + numblocks);
+	unsigned int highest_sump = *std::max_element(sump, sump + numblocks);
 
 	delete [] sumc;
 	delete [] sump;
