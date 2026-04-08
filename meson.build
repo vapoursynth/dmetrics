@@ -1,29 +1,27 @@
-project('dmetrics', 'cpp',
-  default_options: ['buildtype=release', 'warning_level=2', 'b_lto=true', 'b_ndebug=if-release', 'cpp_std=c++14'],
-  license: 'GPL-2.0',
-  meson_version: '>=0.51.0',
-  version: '1.0'
+project('DMetrics', 'cpp',
+    default_options: ['buildtype=release', 'warning_level=2', 'b_lto=true', 'b_ndebug=if-release', 'cpp_std=c++17'],
+    license: 'MIT',
+    license_files: 'LICENSE',
+    meson_version: '>=1.2.3',
+    version: '2.0',
 )
 
-cxx = meson.get_compiler('cpp')
+incdir = include_directories(
+    run_command(
+        find_program('python', 'python3'),
+        '-c',
+        'import vapoursynth as vs; print(vs.get_include())',
+        check: true,
+    ).stdout().strip(),
+)
 
-gcc_syntax = cxx.get_argument_syntax() == 'gcc'
+py = import('python').find_installation(pure: false)
 
-if gcc_syntax
-  vapoursynth_dep = dependency('vapoursynth', version: '>=55').partial_dependency(compile_args: true, includes: true)
-  install_dir = vapoursynth_dep.get_variable(pkgconfig: 'libdir') / 'vapoursynth'
-else
-  vapoursynth_dep = dependency('', required: false)
-  install_dir = get_option('libdir') / 'vapoursynth'
-endif
-
-sources = [
-  'src/dmetrics.cpp'
-]
-
-shared_module('dmetrics', sources,
-  dependencies: [vapoursynth_dep],
-  install: true,
-  install_dir: install_dir,
-  gnu_symbol_visibility: 'hidden'
+shared_module('dmetrics',
+    files('src/dmetrics.cpp'),
+    gnu_symbol_visibility: 'hidden',
+    include_directories: incdir,
+    install: true,
+    install_dir: py.get_install_dir() / 'vapoursynth/plugins',
+    name_prefix: '',
 )
